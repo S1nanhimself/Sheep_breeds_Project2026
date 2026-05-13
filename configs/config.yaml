@@ -1,0 +1,64 @@
+data:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  image_size: 224
+  train_split: 0.70
+  val_split: 0.15
+  test_split: 0.15
+  num_workers: 0   # 0 = main process only (required for MPS on macOS)
+
+classes:
+  - Naeimi
+  - Najdi
+  - Harri
+  - Sawakni
+  - Roman
+  - Barbari
+
+training:
+  epochs: 30
+  batch_size: 32
+  seed: 42
+
+  # Two-phase fine-tuning
+  freeze_epochs: 5          # Phase 1: train head only
+  unfreeze_lr: 1.0e-5       # Phase 2: full model LR
+  head_lr: 1.0e-3           # Phase 1: head LR
+
+  optimizer: adamw
+  weight_decay: 0.01
+  label_smoothing: 0.1
+
+  scheduler: cosine         # cosine annealing
+  warmup_epochs: 2
+
+augmentation:
+  horizontal_flip: true
+  rotation_degrees: 15
+  color_jitter:
+    brightness: 0.3
+    contrast: 0.3
+    saturation: 0.3
+    hue: 0.1
+  random_erasing_prob: 0.25
+  mixup_alpha: 0.4          # 0 to disable
+  cutmix_alpha: 1.0         # 0 to disable
+
+models:
+  efficientnet:
+    timm_name: efficientnet_b3
+    pretrained: true
+    input_size: 224
+  convnext:
+    timm_name: convnext_tiny
+    pretrained: true
+    input_size: 224
+  dinov2:
+    timm_name: vit_small_patch14_dinov2
+    pretrained: true
+    input_size: 224
+
+output:
+  checkpoints_dir: results/checkpoints
+  figures_dir: results/figures
+  log_interval: 10
