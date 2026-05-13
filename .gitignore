@@ -1,5 +1,5 @@
 data/
-results/checkpoints/
+results/checkpoints/*.pth
 __pycache__/
 *.pyc
 *.pth

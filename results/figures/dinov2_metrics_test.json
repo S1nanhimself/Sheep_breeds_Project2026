@@ -1,0 +1,51 @@
+{
+  "Naeimi": {
+    "precision": 0.9629629629629629,
+    "recall": 1.0,
+    "f1-score": 0.9811320754716981,
+    "support": 78.0
+  },
+  "Najdi": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 23.0
+  },
+  "Harri": {
+    "precision": 0.9047619047619048,
+    "recall": 1.0,
+    "f1-score": 0.95,
+    "support": 19.0
+  },
+  "Sawakni": {
+    "precision": 1.0,
+    "recall": 0.92,
+    "f1-score": 0.9583333333333334,
+    "support": 25.0
+  },
+  "Roman": {
+    "precision": 1.0,
+    "recall": 0.8695652173913043,
+    "f1-score": 0.9302325581395349,
+    "support": 23.0
+  },
+  "Barbari": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 10.0
+  },
+  "accuracy": 0.9719101123595506,
+  "macro avg": {
+    "precision": 0.9779541446208112,
+    "recall": 0.9649275362318841,
+    "f1-score": 0.9699496611574278,
+    "support": 178.0
+  },
+  "weighted avg": {
+    "precision": 0.9736044230426252,
+    "recall": 0.9719101123595506,
+    "f1-score": 0.9715280003221072,
+    "support": 178.0
+  }
+}
