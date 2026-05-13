@@ -87,9 +87,16 @@ def train(model_key: str, cfg: dict):
         device = torch.device("cpu")
     print(f"Device: {device}")
 
-    # Use model-specific input size (DINOv2 requires 518, others 224)
-    model_input_size = cfg["models"][model_key].get("input_size", cfg["data"]["image_size"])
-    cfg_with_size = {**cfg, "data": {**cfg["data"], "image_size": model_input_size}}
+    # Use model-specific input size and batch size if specified
+    model_cfg = cfg["models"][model_key]
+    model_input_size = model_cfg.get("input_size", cfg["data"]["image_size"])
+    model_batch_size = model_cfg.get("batch_size", cfg["training"]["batch_size"])
+    cfg_with_size = {
+        **cfg,
+        "data": {**cfg["data"], "image_size": model_input_size},
+        "training": {**cfg["training"], "batch_size": model_batch_size},
+    }
+    print(f"Input size: {model_input_size}x{model_input_size} | Batch size: {model_batch_size}")
 
     train_loader, val_loader, _ = build_dataloaders(cfg_with_size)
     num_classes = len(CLASSES)

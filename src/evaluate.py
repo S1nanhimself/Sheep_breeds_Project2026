@@ -24,6 +24,7 @@ from tqdm import tqdm
 from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image
 from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
+import math
 
 from dataset import SheepDataset, CLASSES, get_transforms
 from models import build_model, SUPPORTED_MODELS
@@ -38,9 +39,23 @@ def get_gradcam_target_layer(model, model_key: str):
     elif model_key == "convnext":
         return [model.stages[-1].blocks[-1].conv_dw]
     elif model_key == "dinov2":
-        # For ViT, use the last attention projection
-        return [model.blocks[-1].attn.proj]
+        return [model.blocks[-1].norm1]
     raise ValueError(f"Unknown model key: {model_key}")
+
+
+def get_reshape_transform(model_key: str, image_size: int):
+    """ViT outputs [B, N+1, C] — reshape patch tokens back to spatial grid."""
+    if model_key != "dinov2":
+        return None
+    patch_size = 14
+    h = w = image_size // patch_size
+
+    def reshape_transform(tensor):
+        # Remove CLS token, reshape to [B, C, H, W]
+        result = tensor[:, 1:, :].reshape(tensor.size(0), h, w, tensor.size(2))
+        return result.transpose(2, 3).transpose(1, 2)
+
+    return reshape_transform
 
 
 def evaluate(model_key: str, cfg: dict, split: str = "test"):
@@ -121,7 +136,9 @@ def _save_gradcam(model, model_key, dataset, device, cfg, figures_dir, split, n_
         print(f"Grad-CAM layer lookup failed: {e}")
         return
 
-    cam = GradCAM(model=model, target_layers=target_layers)
+    reshape_transform = get_reshape_transform(model_key, cfg["data"]["image_size"])
+    cam = GradCAM(model=model, target_layers=target_layers,
+                  reshape_transform=reshape_transform)
     image_size = cfg["data"]["image_size"]
 
     # Pick one sample per class

@@ -57,6 +57,7 @@ models:
     timm_name: vit_small_patch14_dinov2
     pretrained: true
     input_size: 518   # DINOv2 native resolution
+    batch_size: 8     # Smaller batch to avoid OOM at 518x518
 
 output:
   checkpoints_dir: results/checkpoints
