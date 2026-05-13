@@ -59,7 +59,10 @@ def evaluate(model_key: str, cfg: dict, split: str = "test"):
     model.eval()
 
     processed_dir = cfg["data"]["processed_dir"]
-    image_size    = cfg["data"]["image_size"]
+    # Use model-specific input size (DINOv2 requires 518, others 224)
+    model_input_size = cfg["models"][model_key].get("input_size", cfg["data"]["image_size"])
+    cfg = {**cfg, "data": {**cfg["data"], "image_size": model_input_size}}
+    image_size = model_input_size
     dataset = SheepDataset(processed_dir, split, cfg)
 
     loader = torch.utils.data.DataLoader(

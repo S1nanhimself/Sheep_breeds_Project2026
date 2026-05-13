@@ -56,7 +56,7 @@ models:
   dinov2:
     timm_name: vit_small_patch14_dinov2
     pretrained: true
-    input_size: 224
+    input_size: 518   # DINOv2 native resolution
 
 output:
   checkpoints_dir: results/checkpoints
